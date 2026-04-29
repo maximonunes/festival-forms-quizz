@@ -1,0 +1,14 @@
+{% extends 'festival/layout.html' %}
+{% block content %}
+<article class="card">
+    {% if error %}
+        <h2 style="color: #ff4a4a;">Erro</h2>
+        <p>{{ error }}</p>
+        <a href="{% url 'magic_link_request' %}" class="btn">Tentar novamente</a>
+    {% else %}
+        <h2>Verifique o seu terminal!</h2>
+        <p>Simulámos o envio de um link para <strong>{{ email }}</strong>.</p>
+        <p>Clique no link que apareceu na consola do VS Code para entrar.</p>
+    {% endif %}
+</article>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'festival/layout.html' %}
+{% block content %}
+<article class="card">
+    <h2>Entrar com Link Mágico</h2>
+    <p>Introduza o seu email. Enviaremos um link de acesso imediato.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="O seu email" required>
+        <button type="submit" class="btn">Enviar Link</button>
+    </form>
+</article>
+{% endblock %}
