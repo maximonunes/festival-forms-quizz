@@ -7,9 +7,18 @@
         <p><strong>Dia:</strong> {{ concerto.dia }}</p>
         <p><strong>Hora:</strong> {{ concerto.hora }}</p>
         <p><strong>Palco:</strong> {{ concerto.palco }}</p>
-        <p><a href="{% url 'editar_concerto' concerto.id %}" class="btn">Editar este concerto</a></p>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <a href="{% url 'editar_concerto' concerto.id %}" class="btn">Editar este concerto</a>
+            
+            <!-- Botão Apagar Concerto -->
+            <form action="{% url 'apagar_concerto' concerto.id %}" method="POST" onsubmit="return confirm('Tem a certeza que deseja apagar este concerto?');">
+                {% csrf_token %}
+                <button type="submit" class="btn" style="background-color: #d81b60; color: white; border: none; cursor: pointer;">
+                    Apagar concerto
+                </button>
+            </form>
+        </div>
     </article>
-
     
 {% endblock %}
-    

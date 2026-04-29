@@ -1,0 +1,13 @@
+{% extends 'festival/layout.html' %}
+
+{% block content %}
+<article class="card">
+    <h2>Criar concerto</h2>
+    
+    <form method="post" style="display: grid; gap: 12px; max-width: 520px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width: fit-content;">Criar concerto</button>
+    </form>
+</article>
+{% endblock %}

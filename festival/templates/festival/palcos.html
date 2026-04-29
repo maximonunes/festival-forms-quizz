@@ -1,12 +1,18 @@
 {% extends 'festival/layout.html' %}
 
 {% block content %}
-    
 
 {% for palco in palcos %}
-<div style="display: flex; align-items: center; gap: 12px;">
-    <h2>{{ palco.nome }}</h2>
-    <a href="" class="btn">Editar palco</a>
+<div style="display: flex; align-items: center; gap: 12px; margin-top: 30px;">
+    <h2>
+        {{ palco.nome }} 
+        <span style="font-size: 0.8em; font-weight: normal;">
+            ({{ palco.capacidade }} pessoas • 
+            {{ palco.concertos.count }} concertos 
+            {% if palco.acessibilidade_mobilidade_reduzida %} • ♿ {% endif %})
+        </span>
+    </h2>
+    <a href="{% url 'editar_palco' palco.id %}" class="btn">Editar palco</a>
 </div>
 
     {% if palco.imagem %}
@@ -15,11 +21,12 @@
 
     {% for concerto in palco.concertos.all %}
         <article class="card">
-            <a href="{% url 'concerto' concerto.id %}">{{ concerto.banda.nome }} - {{ concerto.dia }}, {{ concerto.hora }}</a>
+            <a href="{% url 'concerto' concerto.id %}">
+                {{ concerto.banda.nome }} - {{ concerto.dia }}, {{ concerto.hora }}
+            </a>
         </article>
     {% endfor %}
 
 {% endfor %}
 
 {% endblock %}
-    

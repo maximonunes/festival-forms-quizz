@@ -47,3 +47,50 @@ def editar_concerto_view(request, concerto_id):
     }
 
     return render(request, 'festival/editar_concerto.html', context)
+
+
+# ... (deixa estar o resto do código existente para cima)
+
+def criar_concerto_view(request):
+    if request.method == 'POST':
+        form = ConcertoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Assumindo que a tua rota principal se chama 'dias' ou 'index'
+            return redirect('dias') 
+    else:
+        form = ConcertoForm()
+    
+    context = {'form': form}
+    return render(request, 'festival/criar_concerto.html', context)
+
+
+def apagar_concerto_view(request, concerto_id):
+    concerto = get_object_or_404(Concerto, id=concerto_id)
+    
+    if request.method == 'POST':
+        concerto.delete()
+        # Após apagar, volta à página de dias
+        return redirect('dias') 
+        
+    # Se alguém tentar aceder via GET (escrevendo o URL), mandamos de volta para o concerto
+    return redirect('concerto', concerto_id=concerto.id)
+
+
+def editar_palco_view(request, palco_id):
+    palco = get_object_or_404(Palco, id=palco_id)
+    
+    if request.method == 'POST':
+        # NOTA: request.FILES é obrigatório porque o Palco tem um ImageField!
+        form = PalcoForm(request.POST, request.FILES, instance=palco)
+        if form.is_valid():
+            form.save()
+            return redirect('palcos')
+    else:
+        form = PalcoForm(instance=palco)
+        
+    context = {
+        'form': form, 
+        'palco': palco
+    }
+    return render(request, 'festival/editar_palco.html', context)
