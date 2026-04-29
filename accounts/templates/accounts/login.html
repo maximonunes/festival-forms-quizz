@@ -1,0 +1,16 @@
+{% extends 'festival/layout.html' %}
+
+{% block content %}
+<article class="card">
+    <h2>Login</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Entrar</button>
+    </form>
+    <hr>
+    <p>Não tem conta? <a href="{% url 'registo' %}">Registe-se aqui</a>.</p>
+    <!-- Espaço para o Link Mágico no futuro -->
+    <p><a href="#">Entrar com Link Mágico (brevemente)</a></p>
+</article>
+{% endblock %}

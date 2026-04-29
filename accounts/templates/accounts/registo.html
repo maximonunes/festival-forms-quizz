@@ -1,0 +1,13 @@
+{% extends 'festival/layout.html' %}
+
+{% block content %}
+<article class="card">
+    <h2>Criar nova conta</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Registar</button>
+    </form>
+    <p>Já tem conta? <a href="{% url 'login' %}">Faça login aqui</a>.</p>
+</article>
+{% endblock %}

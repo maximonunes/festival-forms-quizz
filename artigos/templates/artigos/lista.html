@@ -1,0 +1,31 @@
+{% extends 'festival/layout.html' %}
+
+{% block content %}
+<section>
+    <h2>Artigos e Novidades</h2>
+    
+    {% for artigo in artigos %}
+    <article class="card">
+        <h3>{{ artigo.titulo }}</h3>
+        <p><small>Por {{ artigo.autor.username }} em {{ artigo.data_criacao|date:"d/m/Y" }}</small></p>
+        
+        {% if artigo.fotografia %}
+            <img src="{{ artigo.fotografia.url }}" style="max-width: 100%; border-radius: 8px;">
+        {% endif %}
+        
+        <p>{{ artigo.texto|truncatewords:30 }}</p>
+        
+        <div style="margin-top: 15px;">
+            <a href="{% url 'artigos:like_artigo' artigo.id %}" class="btn">
+                ❤️ {{ artigo.likes.count }} Likes
+            </a>
+            {% if artigo.link_externo %}
+                <a href="{{ artigo.link_externo }}" target="_blank" class="btn" style="background: #333; color: white;">Ler mais</a>
+            {% endif %}
+        </div>
+    </article>
+    {% empty %}
+    <p>Ainda não há artigos publicados.</p>
+    {% endfor %}
+</section>
+{% endblock %}
