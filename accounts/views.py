@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group
+from django.shortcuts import render, redirect, get_object_or_404 # Adiciona o get_object_or_404
+import uuid # Garante que este import está aqui para o magic_link_request
 from .forms import RegistoForm
 
 

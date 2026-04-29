@@ -1,38 +1,39 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required # Import necessário
 from .models import Dia, Palco, Concerto               
 from .forms import ConcertoForm, PalcoForm
 
+# Helper function para verificar se é gestor (evita repetir código)
+def e_gestor(user):
+    return user.groups.filter(name='gestor-portfolio').exists()
 
 def index_view(request):
     return render(request, 'festival/index.html')
 
 def dias_view(request):
     dias = Dia.objects.all()
-
     context = {'dias': dias}
-
     return render(request, 'festival/dias.html', context)
-
 
 def palcos_view(request):
     palcos = Palco.objects.all() 
-
     context = {'palcos': palcos}
-
     return render(request, 'festival/palcos.html', context)
 
-
 def concerto_view(request, concerto_id):
-    concerto = Concerto.objects.get(id=concerto_id)
-
+    concerto = get_object_or_404(Concerto, id=concerto_id)
     context = {'concerto': concerto}
-
     return render(request, 'festival/concerto.html', context)
 
+# --- VIEWS PROTEGIDAS (CRUD) ---
 
+@login_required
 def editar_concerto_view(request, concerto_id):
-    concerto = get_object_or_404(Concerto, id=concerto_id)
+    # Requisito: Apenas gestor-portfolio pode editar
+    if not e_gestor(request.user):
+        return redirect('index')
 
+    concerto = get_object_or_404(Concerto, id=concerto_id)
     if request.method == 'POST':
         form = ConcertoForm(request.POST, instance=concerto)
         if form.is_valid():
@@ -41,47 +42,42 @@ def editar_concerto_view(request, concerto_id):
     else:
         form = ConcertoForm(instance=concerto)
 
-    context = {
-        'concerto': concerto,
-        'form': form,
-    }
-
+    context = {'concerto': concerto, 'form': form}
     return render(request, 'festival/editar_concerto.html', context)
 
-
-# ... (deixa estar o resto do código existente para cima)
-
+@login_required
 def criar_concerto_view(request):
+    if not e_gestor(request.user):
+        return redirect('index')
+
     if request.method == 'POST':
         form = ConcertoForm(request.POST)
         if form.is_valid():
             form.save()
-            # Assumindo que a tua rota principal se chama 'dias' ou 'index'
             return redirect('dias') 
     else:
         form = ConcertoForm()
     
-    context = {'form': form}
-    return render(request, 'festival/criar_concerto.html', context)
+    return render(request, 'festival/criar_concerto.html', {'form': form})
 
-
+@login_required
 def apagar_concerto_view(request, concerto_id):
+    if not e_gestor(request.user):
+        return redirect('index')
+
     concerto = get_object_or_404(Concerto, id=concerto_id)
-    
     if request.method == 'POST':
         concerto.delete()
-        # Após apagar, volta à página de dias
         return redirect('dias') 
-        
-    # Se alguém tentar aceder via GET (escrevendo o URL), mandamos de volta para o concerto
     return redirect('concerto', concerto_id=concerto.id)
 
-
+@login_required
 def editar_palco_view(request, palco_id):
+    if not e_gestor(request.user):
+        return redirect('index')
+
     palco = get_object_or_404(Palco, id=palco_id)
-    
     if request.method == 'POST':
-        # NOTA: request.FILES é obrigatório porque o Palco tem um ImageField!
         form = PalcoForm(request.POST, request.FILES, instance=palco)
         if form.is_valid():
             form.save()
@@ -89,8 +85,5 @@ def editar_palco_view(request, palco_id):
     else:
         form = PalcoForm(instance=palco)
         
-    context = {
-        'form': form, 
-        'palco': palco
-    }
+    context = {'form': form, 'palco': palco}
     return render(request, 'festival/editar_palco.html', context)
